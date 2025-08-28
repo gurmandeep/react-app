@@ -1,39 +1,43 @@
 import { useState } from "react";
 import { addTodo } from "../services/getTodoService";
+import Alert from "./Alert";
 
 function AddTodo() {
   const [title, setTitle] = useState<string>("");
   const [completed, setCompleted] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   function add() {
+    setSuccess("");
+    setError("");
+    if (title == "") {
+      setError("Todo field is required");
+      return;
+    }
     const saveTodo = addTodo({ title: title, completed: completed });
-    console.log(saveTodo);
-    saveTodo.then((res) => {
-      if (res.id > 0) {
-        setSuccess("Success! Todo has been created");
-      }
-    });
+    saveTodo
+      .then((res) => {
+        if (res.id > 0) {
+          setSuccess("Success! Todo has been created");
+          setTitle("");
+          setCompleted(false);
+        }
+      })
+      .catch(() => {
+        setError("❌ Failed to create todo. Please try again.");
+      });
   }
 
   function close() {
     setSuccess("");
+    setError("");
   }
 
   return (
     <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg flex flex-col gap-6">
-      {success ? (
-        <div>
-          <div className="bg-green-400 px-4 py-2 rounded text-white">
-            {success}
-            <span className="top-0 float-end">
-              <button onClick={close}>X</button>
-            </span>
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
+      <Alert type="success" message={success} close={close} />
+      <Alert type="error" message={error} close={close} />
       <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
         Add New Todo
       </h2>

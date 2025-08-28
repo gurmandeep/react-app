@@ -31,19 +31,49 @@ function TodoList() {
   }, []);
 
   return (
-    <>
-      <div className="border">
-        <ul>
-          {state.todos.map((todo: Todo, key: number) => {
-            return (
-              <li className="" key={key}>
-                <input type="checkbox" /> {todo.title}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </>
+    <div className="max-w-xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Todo List
+      </h2>
+      {state.loading && (
+        <div className="flex justify-center items-center mb-4">
+          <span className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500 mr-2"></span>
+          <span className="text-indigo-500">Loading...</span>
+        </div>
+      )}
+      {state.error && (
+        <div className="text-red-500 text-center mb-4">{state.error}</div>
+      )}
+      <ul className="divide-y divide-gray-200">
+        {state.todos.map((todo: Todo, key: number) => (
+          <li
+            className="flex items-center justify-between py-3 px-2 hover:bg-gray-50 transition-colors duration-150"
+            key={key}
+          >
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                readOnly
+                className="accent-indigo-500 w-5 h-5"
+              />
+              <span
+                className={`text-lg ${
+                  todo.completed
+                    ? "line-through text-gray-400"
+                    : "text-gray-700"
+                }`}
+              >
+                {todo.title}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {state.todos.length === 0 && !state.loading && (
+        <div className="text-gray-500 text-center mt-6">No todos found.</div>
+      )}
+    </div>
   );
 }
 
