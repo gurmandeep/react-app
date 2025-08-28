@@ -4,7 +4,7 @@ export type Action =
   | { type: "FETCH_ERROR"; payload: string };
 
 export type Todo = {
-  id: number;
+  id?: number;
   title: string;
   completed: boolean;
 };

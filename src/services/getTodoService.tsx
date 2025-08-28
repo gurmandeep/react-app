@@ -8,12 +8,12 @@ const getTodos = async () => {
   return todos;
 };
 
-const addTodo = (todo: Todo) => {
-  const response = fetch(`${API_URL}/todos`, {
+const addTodo = async (todo: Todo) => {
+  const response = await fetch(`${API_URL}/todos`, {
     method: "POST",
     body: JSON.stringify(todo),
   });
-  return response;
+  return response.json();
 };
 
-export { getTodos };
+export { getTodos, addTodo };
