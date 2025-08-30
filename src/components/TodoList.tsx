@@ -1,40 +1,28 @@
 import { useEffect, useReducer } from "react";
 import { getTodos } from "../services/getTodoService";
-import type { Action, TodoState, Todo } from "../types/TodoTypes";
+import type { Todo, TodoListProp } from "../types/TodoTypes";
+import { initialState, reducer } from "../reducers/todoReducer";
 
-// Initial state
-const initialState: TodoState = {
-  loading: false,
-  error: null,
-  todos: [],
-};
-
-const reducer = (state: TodoState, action: Action): TodoState => {
-  switch (action.type) {
-    case "FETCH_START":
-      return { ...state, loading: true, error: null };
-    case "FETCH_SUCCESS":
-      return { ...state, loading: false, todos: action.payload };
-    case "FETCH_ERROR":
-      return { ...state, loading: false, error: action.payload };
-    default:
-      return state;
-  }
-};
-
-function TodoList({ search }: { search: string }) {
+function TodoList({ search, type }: TodoListProp) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     dispatch({ type: "FETCH_START" });
+
     getTodos().then((data) => {
       dispatch({ type: "FETCH_SUCCESS", payload: data });
     });
   }, []);
 
-  const filtered = state.todos.filter((todo) =>
-    todo.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = state.todos.filter((todo) => {
+    if (type == "completed" && !todo.completed) {
+      return false;
+    }
+    if (type == "pending" && todo.completed) {
+      return false;
+    }
+    return todo.title.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">

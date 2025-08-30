@@ -15,3 +15,8 @@ export type TodoState = {
   error: string | null;
   todos: Todo[];
 };
+
+export type TodoListProp = {
+  search: string;
+  type: string;
+};
