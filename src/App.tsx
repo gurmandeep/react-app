@@ -13,3 +13,5 @@ function App() {
 }
 
 export default App;
+
+// const { data, error } = await supabase.from("todos").select();

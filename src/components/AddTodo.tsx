@@ -8,25 +8,27 @@ function AddTodo() {
   const [success, setSuccess] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  function add() {
+  async function add() {
     setSuccess("");
     setError("");
     if (title == "") {
       setError("Todo field is required");
       return;
     }
-    const saveTodo = addTodo({ title: title, completed: completed });
-    saveTodo
-      .then((res) => {
-        if (res.id > 0) {
-          setSuccess("Success! Todo has been created");
-          setTitle("");
-          setCompleted(false);
-        }
-      })
-      .catch(() => {
-        setError("❌ Failed to create todo. Please try again.");
-      });
+    const { data, error } = await addTodo({
+      title: title,
+      completed: completed,
+    });
+
+    console.log(data);
+
+    if (data && data.length > 0) {
+      setSuccess("Success! Todo has been created");
+      setTitle("");
+      setCompleted(false);
+    } else {
+      setError("❌ Failed to create todo. Please try again.");
+    }
   }
 
   function close() {

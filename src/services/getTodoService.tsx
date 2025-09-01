@@ -1,19 +1,14 @@
 import type { Todo } from "../types/TodoTypes";
+import { supabase } from "../supabaseClient";
 
-const API_URL = "https://jsonplaceholder.typicode.com";
-
-const getTodos = async () => {
-  const response = await fetch(`${API_URL}/todos?_limit=10`);
-  const todos = await response.json();
-  return todos;
+const getTodos = async (): Promise<Todo[]> => {
+  const { data, error } = await supabase.from("todos").select();
+  console.log(error);
+  return (data ?? []) as Todo[];
 };
 
 const addTodo = async (todo: Todo) => {
-  const response = await fetch(`${API_URL}/todos`, {
-    method: "POST",
-    body: JSON.stringify(todo),
-  });
-  return response.json();
+  return await supabase.from("todos").insert([todo]).select();
 };
 
 export { getTodos, addTodo };
